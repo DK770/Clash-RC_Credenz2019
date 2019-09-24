@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<p>This is the question page</p>
+<form method="post">
+    {%csrf_token%}
+    {{ message }}<br>
+    {{ question.question }}
+    <table>
+        <tr>
+            <td><input type="radio" name="options" value="{{question.option1}}" ></td><td>{{ question.option1 }}
+            <td><input type="radio" name="options" value="{{question.option2}}" ></td><td>{{ question.option2 }}
+            <td><input type="radio" name="options" value="{{question.option3}}" ></td><td>{{ question.option3 }}
+            <td><input type="radio" name="options" value="{{question.option4}}" ></td><td>{{ question.option4 }}
+        </td></tr>
+        <tr><td>Score</td>
+        <td>:</td>
+            <td>{{ score }}</td></tr></table>
+    <p>Counter    :  {{  profile.endian_counter }}</p>
+    <p>Stack    :  {{  profile.stack }}</p>
+    <p>Lifeline   :  {{ profile.lifeline1 }}</p>
+    <p>Buffer Questions   :  {{ profile.buff_que_added }}</p>
+    <br>
+
+    {% if profile.stack >= 4 %}
+    <button type="submit" formaction="activate/" name="endian" id="endian">Activate Lifeline</button>
+    {% endif %}
+    {% if profile.lifeline1 %}
+    <button type="submit" name="lifeline" formaction="/question/lifeline/{{ question.id }}/">Submit Your Response</button>
+    {% else %}
+    <button type="submit" formaction="../answer/{{ question.id }}/">Submit Your Response</button>
+    {% endif %}
+
+    <label>Time left: {{ your_time }}</label>
+    <button type="submit" name="logout" formaction="logout/" formmethod="post">Exit</button>
+    <button type="submit" name="buffer" id="buffer" formaction="pushinbuffer/{{ question.id }}/" onclick="question()">Put this in buffer</button>
+    <button type="submit" name="buffer1" id="buffer1"  formaction="buff/">buffer1</button>
+    <button type="submit" name="buffer2" id="buffer2"  formaction="buff/">buffer2</button>
+    <button type="submit" name="buffer3" id="buffer3"  formaction="buff/">buffer3</button>
+<script>
+document.getElementById("buffer1").addEventListener("click", buffer1);
+document.getElementById("buffer2").addEventListener("click", buffer2);
+document.getElementById("buffer3").addEventListener("click", buffer3);
+document.getElementById("endian").addEventListener("click", endian);
+
+    function endian(){
+    if({{ profile.lifeline1 }} == 1)
+    {
+    window.alert("you have already activated endian");
+    document.getElementById("endian").disabled = true;
+    }
+    if({{ profile.life_counter }} == 2)
+    {
+    window.alert("sorry, cant activate endian");
+    document.getElementById("endian").disabled = true;
+    }
+    }
+
+
+    function question(){
+    if({{ profile.lifeline1 }} == 1 || {{ profile.life_counter }} == 2)
+    {
+    window.alert("sorry, cant push in buffer");
+    document.getElementById("buffer").disabled = true;
+    }
+    else
+    if({{ full_buff }} <= 2){
+    window.alert("Added successfully to buffer!");
+    }
+    else
+    {
+    window.alert("First solve one of the buffer Questions!");
+    document.getElementById("buffer").disabled = true;
+    }
+
+    }
+    function buffer1(){
+    console.log("Hello");
+    if({{ profile.life_counter }} == 2)
+    {
+    window.alert("cant render buffer question");
+    document.getElementById("buffer1").disabled = true;
+    }
+    else
+    if({{ buff1 }} == 0)
+    {
+    window.alert("No buffer question is present");
+    document.getElementById("buffer1").disabled = true;
+    }
+    }
+    function buffer2(){
+    if({{ profile.life_counter }} == 2)
+    {
+    window.alert("cant render buffer question");
+    document.getElementById("buffer2").disabled = true;
+    }
+    else
+    if({{ buff2 }} == 0){
+    window.alert("No buffer question is present");
+    document.getElementById("buffer2").disabled = true;
+    }
+    }
+    function buffer3(){
+    if({{ profile.life_counter }} == 2)
+    {
+    window.alert("cant render buffer question");
+    document.getElementById("buffer3").disabled = true;
+    }
+    else
+    if({{ buff3 }} == 0){
+    window.alert("No buffer question is present");
+    document.getElementById("buffer3").disabled = true;
+    }
+    }
+
+</script>
+
+</form>
+</body>
+
+<script>
+        // Set the date we're counting down to
+    var countDownDate = new Date().getTime();
+
+    // Update the count down every 1 second
+    var x = setInterval(function() {
+
+        // Get today's date and time
+        var now = new Date().getTime();
+
+        // Find the distance between now and the count down date
+        var distance = {{ your_time }};
+
+        // Time calculations for days, hours, minutes and seconds
+        var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        var hours = Math.floor((distance / 3600);
+        var minutes = Math.floor(distance / 60);
+        var seconds = Math.floor(distance % 60);
+
+        // Display the result in the element with id="demo"
+        document.getElementById("demo").innerHTML = hours + "h " + minutes + "m " + seconds + "s ";
+
+        // If the count down is finished, write some text
+        if (distance < 1) {
+            clearInterval(x);
+            window.location.href="http://127.0.0.1:8000/question/logout/";
+            document.getElementById("demo").innerHTML = "EXPIRED";
+        }
+    }, 1000);
+</script>
+
+</html>

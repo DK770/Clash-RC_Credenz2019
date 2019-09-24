@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>register</title>
+</head>
+<body>
+    {% if error %}
+    {{ error }}
+    {% endif %}
+    <form id="new_user_form" action="" method="post">
+        <div>{% csrf_token %}
+        Enter Username:<br>
+        <input type="text" name="uname" id="id_username" required="" placeholder="Username"><br>
+        enter password<br>
+        <input type="password" name="pass" placeholder="Password"><br>
+        enter password again:<br>
+        <input type="password" name="passwordagain" placeholder="Confirm Password"><br>
+        <input type="text"name="p1_name"placeholder="First player name:"><br>
+        <input type="text"name="p1_email"placeholder="First player email:"><br>
+        <input type="text"name="mob1" placeholder="1st player mobile No."><br>
+        <input type="text"name="p2_name"placeholder="Second player name:"><br>
+        <input type="text"name="p2_email"placeholder="Second player email:"><br>
+        <input type="text"name="mob2" placeholder="2nd player mobile No."><br>
+        <p>Year:</p>
+        <input type="radio" name="year" value="1" checked>FE<br>
+        <input type="radio" name="year" value="2">SE, TE, BE<br>
+        <input type="submit" value="Signup" name="login">
+        </div>
+    </form>
+<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+{% block javascript %}
+    <script type="text/javascript">
+    $("#id_username").keyup(function () {
+      var username = $(this).val();
+$.ajax({
+        url: '/ajax/validate_username/',
+        data: {
+          'username': username
+        },
+        dataType: 'json',
+        success: function (data) {
+         if (data.is_taken) {
+         document.getElementById("loginbtn").disabled=true;
+            document.getElementById("id_username").style = "border : 2px solid red";
+
+          }else {
+            document.getElementById("loginbtn").disabled=false;
+            document.getElementById("id_username").style = "border : 2px solid green";
+            }
+        }
+      });
+    });
+  </script>
+{% endblock %}
+</body>
+</html>
